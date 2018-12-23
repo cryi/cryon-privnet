@@ -1,0 +1,81 @@
+#  CRYON PRIVNETS
+#  Copyright (C) 2018 cryon.io
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+#  Contact: cryi@tutanota.com
+
+version: "2.4"
+services:
+  pool: 
+    restart: always
+    init: true
+    build: .
+    volumes:
+      - "./data/pool:/data"
+    environment:
+      - >
+        PARAMS=-datadir=/data/ 
+        -regtest=1 
+        -port=15000 
+        -rpcuser=user 
+        -rpcpassword=pass 
+        -rpcport=20000 
+        -rpcbind=0.0.0.0 
+        -rpcallowip=::/0 
+        -discover=0 
+        -server=1 
+        -rpcssl=0
+        -addnode=node1:15000 
+        -addnode=node2:15000
+    ports: 
+      - "20000:20000"
+      - "15000:15000"
+    links:
+      - node1:node1
+      - node2:node2
+  
+  node1:
+    restart: always
+    init: true
+    build: .
+    volumes:
+      - "./data/node1:/data"
+    environment:
+      - >
+        PARAMS=-datadir=/data/ 
+        -regtest=1 
+        -port=15000 
+        -rpcbind=0.0.0.0 
+        -rpcallowip=::/0 
+        -discover=0 
+        -server=1 
+        -rpcssl=0
+
+  node2:
+    restart: always
+    init: true
+    build: .
+    volumes:
+      - "./data/node2:/data"
+    environment:
+      - >
+        PARAMS=-datadir=/data/ 
+        -regtest=1 
+        -port=15000 
+        -rpcbind=0.0.0.0 
+        -rpcallowip=::/0 
+        -discover=0 
+        -server=1 
+        -rpcssl=0
